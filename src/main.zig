@@ -12,6 +12,7 @@ const ROPE_COLOR = 0xFFFFFFFF;
 const NB_ROPE_SEG: i32 = 50;
 
 var quit = false;
+var pause = false;
 
 const Point = struct {
     x: f32,
@@ -45,7 +46,9 @@ fn set_color(renderer: *c.SDL_Renderer, color: u32) void {
     _ = c.SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
-fn update(_: f32) void {}
+fn update(_: f32) void {
+    if (!pause) {}
+}
 
 // TODO always inline
 fn draw_segment(renderer: *c.SDL_Renderer, seg: Segment) void {
@@ -90,6 +93,7 @@ pub fn main() !void {
                 c.SDL_KEYDOWN => {
                     switch (event.key.keysym.sym) {
                         'q' => quit = true,
+                        ' ' => pause = true,
                         else => {},
                     }
                 },
