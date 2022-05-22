@@ -10,6 +10,8 @@ const WINDOW_HEIGHT = 600;
 const BACKGROUND_COLOR = 0xFF000000;
 const ROPE_COLOR = 0xFFFFFFFF;
 const NB_ROPE_SEG: i32 = 50;
+const ROPE_SPEED_X: f32 = 10;
+const ROPE_SPEED_Y: f32 = -5;
 
 var quit = false;
 var pause = false;
@@ -46,8 +48,26 @@ fn set_color(renderer: *c.SDL_Renderer, color: u32) void {
     _ = c.SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
-fn update(_: f32) void {
-    if (!pause) {}
+// TODO always inline
+fn translate_point(dx: f32, dy: f32, pt: Point) Point {
+    return Point{ .x = pt.x + dx, .y = pt.y + dy };
+}
+
+// TODO always inline
+fn translate_segment(dx: f32, dy: f32, seg: Segment) Segment {
+    return Segment{ .pt1 = translate_point(dx, dy, seg.pt1), .pt2 = translate_point(dx, dy, seg.pt2) };
+}
+
+fn translate_rope(dx: f32, dy: f32) void {
+    for (rope) |*item| {
+        item.* = translate_segment(dx, dy, item.*);
+    }
+}
+
+fn update(dt: f32) void {
+    if (!pause) {
+        translate_rope(dt * ROPE_SPEED_X, dt * ROPE_SPEED_Y);
+    }
 }
 
 // TODO always inline
