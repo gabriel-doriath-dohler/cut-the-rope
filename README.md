@@ -2,17 +2,17 @@
 
 An experiment to simulate ropes in Zig.
 
-# Installing dependencies
+## Installing dependencies
 
-## Using Nix
+### Using Nix
 
 Install direnv and Nix. Enable flakes. Run `direnv allow` (in the source repository).
 
-## Without Nix
+### Without Nix
 
 Install Zig and SDL2.
 
-# Build and run
+## Build and run
 
 ```console
 git clone github.com/gabriel-doriath-dohler/cut-the-rope
@@ -20,7 +20,7 @@ cd cut-the-rope
 zig build run
 ```
 
-# Git hooks
+## Git hooks
 
 You can add a pre-commit git hook to make sure that files are formatted using:
 ```console
