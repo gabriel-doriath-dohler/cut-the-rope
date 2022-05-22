@@ -8,16 +8,33 @@ const DELTA_TIME_SEC: f32 = 1.0 / @intToFloat(f32, FPS);
 const WINDOW_WIDTH = 800;
 const WINDOW_HEIGHT = 600;
 const BACKGROUND_COLOR = 0xFF000000;
-const RECT_SIZE: f32 = 25;
-const RECT_SPEED: f32 = 350;
-const RECT_COLOR = 0xFFFFFFFF;
+const ROPE_COLOR = 0xFFFFFFFF;
+const NB_ROPE_SEG: i32 = 50;
 
-var rect_x: f32 = WINDOW_WIDTH / 2 - RECT_SIZE / 2;
-var rect_y: f32 = 30;
 var quit = false;
 
-fn make_rect(x: f32, y: f32, w: f32, h: f32) c.SDL_Rect {
-    return c.SDL_Rect{ .x = @floatToInt(i32, x), .y = @floatToInt(i32, y), .w = @floatToInt(i32, w), .h = @floatToInt(i32, h) };
+const Point = struct {
+    x: f32,
+    y: f32,
+};
+const Segment = struct {
+    pt1: Point,
+    pt2: Point,
+};
+
+var rope: [NB_ROPE_SEG]Segment = undefined;
+
+fn make_point_from_int(x: usize, y: usize) Point {
+    return Point{ .x = @intToFloat(f32, x), .y = @intToFloat(f32, y) };
+}
+
+fn init_rope() void {
+    for (rope) |*item, i| {
+        item.* = Segment{
+            .pt1 = make_point_from_int(100 + 10 * i, 200 + i * i),
+            .pt2 = make_point_from_int(100 + 10 * (i + 1), 200 + (i + 1) * (i + 1)),
+        };
+    }
 }
 
 fn set_color(renderer: *c.SDL_Renderer, color: u32) void {
@@ -28,18 +45,23 @@ fn set_color(renderer: *c.SDL_Renderer, color: u32) void {
     _ = c.SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
-fn rect(x: f32, y: f32) c.SDL_Rect {
-    return make_rect(x, y, RECT_SIZE, RECT_SIZE);
-}
-
 fn update(_: f32) void {}
 
+// TODO always inline
+fn draw_segment(renderer: *c.SDL_Renderer, seg: Segment) void {
+    _ = c.SDL_RenderDrawLine(renderer, @floatToInt(i32, seg.pt1.x), @floatToInt(i32, seg.pt1.y), @floatToInt(i31, seg.pt2.x), @floatToInt(i32, seg.pt2.y));
+}
+
 fn render(renderer: *c.SDL_Renderer) void {
-    set_color(renderer, RECT_COLOR);
-    _ = c.SDL_RenderFillRect(renderer, &rect(rect_x, rect_y));
+    set_color(renderer, ROPE_COLOR);
+    for (rope) |*item| {
+        draw_segment(renderer, item.*);
+    }
 }
 
 pub fn main() !void {
+    init_rope();
+
     if (c.SDL_Init(c.SDL_INIT_VIDEO) < 0) {
         c.SDL_Log("Unable to initialize SDL: %s", c.SDL_GetError());
         return error.SDLInitializationFailed;
