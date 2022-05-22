@@ -1,4 +1,6 @@
 {
+  description = "An experiment to simulate ropes in Zig";
+
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
