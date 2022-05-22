@@ -87,6 +87,12 @@ pub fn main() !void {
                 c.SDL_QUIT => {
                     quit = true;
                 },
+                c.SDL_KEYDOWN => {
+                    switch (event.key.keysym.sym) {
+                        'q' => quit = true,
+                        else => {},
+                    }
+                },
                 else => {},
             }
         }
