@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Check if this is the inital commit
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+  against=HEAD
+else
+  against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+echo "pre-commit: Testing the formatting of Nix files..."
+nixfmt -c flake.nix
+
+echo "pre-commit: Testing the formatting of Zig files..."
+# XXX: Unfourtunatly, it's difficult to differentiate between a
+# `zig fmt` usage error and an "found unformated file"-error.
+# To workaround this, we only check the output not the exit code.
+files=$(git diff-index --name-only --cached $against -- '*.zig' | \
+	xargs zig fmt --check 2>&1 | \
+	rg -v "expected at least one source file argument")
+
+if [ -n "$files" ]; then
+	printf "The following files need to be formated with 'zig fmt':\n\n" 1>&2
+	printf "%s\n" "$files" | sed 's/^/\t/g' 1>&2
+	exit 1
+fi
+
+echo "pre-commit: Shellchecking..."
+shellcheck .githooks/pre-commit --norc
