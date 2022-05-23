@@ -2,6 +2,13 @@
 
 An experiment to simulate ropes in Zig.
 
+## Usage
+
+| Key | Effect |
+| --- | --- |
+| q | quit |
+| space | toggle pause |
+
 ## Installing dependencies
 
 ### Using Nix
