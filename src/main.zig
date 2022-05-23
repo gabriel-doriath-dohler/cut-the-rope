@@ -91,7 +91,7 @@ pub fn main() !void {
     }
     defer c.SDL_Quit();
 
-    const window = c.SDL_CreateWindow("Zigout", 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0) orelse {
+    const window = c.SDL_CreateWindow("Cut the rope", 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0) orelse {
         c.SDL_Log("Unable to initialize SDL: %s", c.SDL_GetError());
         return error.SDLInitializationFailed;
     };
