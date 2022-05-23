@@ -10,8 +10,8 @@ const WINDOW_HEIGHT = 600;
 const BACKGROUND_COLOR = 0xFF000000;
 const ROPE_COLOR = 0xFFFFFFFF;
 const NB_ROPE_SEG: i32 = 50;
-const ROPE_SPEED_X: f32 = 10;
-const ROPE_SPEED_Y: f32 = -5;
+const ROPE_SPEED_X: f32 = 100;
+const ROPE_SPEED_Y: f32 = -50;
 
 var quit = false;
 var pause = false;
