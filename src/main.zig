@@ -113,7 +113,7 @@ pub fn main() !void {
                 c.SDL_KEYDOWN => {
                     switch (event.key.keysym.sym) {
                         'q' => quit = true,
-                        ' ' => pause = true,
+                        ' ' => pause = !pause,
                         else => {},
                     }
                 },
