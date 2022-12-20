@@ -1,0 +1,2 @@
+#!/bin/sh
+ffmpeg -framerate 12 -i thumbnails/screenshot%d.bmp -vf scale=600:-1 -loop 0 thumbnails/thumbnail.gif

@@ -2,12 +2,18 @@
 
 An experiment to simulate ropes in Zig.
 
+![thumbnail](./thumbnails/thumbnail.gif)
+
+Well... lets just say there is some more work to be done ^^
+
 ## Usage
 
 | Key | Effect |
 | --- | --- |
 | q | quit |
 | space | toggle pause |
+| s | take a screenshot |
+| r | toggle recording |
 
 ## Installing dependencies
 

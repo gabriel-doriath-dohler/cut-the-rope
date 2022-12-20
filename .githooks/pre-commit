@@ -27,3 +27,4 @@ fi
 
 echo "pre-commit: Shellchecking..."
 shellcheck .githooks/pre-commit --norc
+shellcheck makeGIF --norc

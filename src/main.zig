@@ -3,6 +3,7 @@ const c = @cImport({
     @cInclude("SDL2/SDL.h");
 });
 
+const FORMAT = c.SDL_PIXELFORMAT_ARGB8888;
 const FPS = 60;
 const DELTA_TIME_SEC: f32 = 1.0 / @intToFloat(f32, FPS);
 const WINDOW_WIDTH = 800;
@@ -12,8 +13,13 @@ const ROPE_COLOR = 0xFFFFFFFF;
 const NB_ROPE_SEG: i32 = 50;
 const ROPE_SPEED_X: f32 = 100;
 const ROPE_SPEED_Y: f32 = -50;
+const INTERVAL_SCREENSHOT: i64 = 5;
 
 var pause = false;
+var record = false;
+var shot = false;
+var frame_nb: u64 = 0;
+var image: *c.SDL_Surface = undefined;
 
 const Point = struct {
     x: f32,
@@ -25,6 +31,7 @@ const Segment = struct {
 };
 
 var rope: [NB_ROPE_SEG]Segment = undefined;
+var screenshot_counter: i64 = 0;
 
 fn make_point_from_int(x: usize, y: usize) Point {
     return Point{ .x = @intToFloat(f32, x), .y = @intToFloat(f32, y) };
@@ -78,6 +85,24 @@ fn render(renderer: *c.SDL_Renderer) void {
     }
 }
 
+fn screenshot(renderer: *c.SDL_Renderer) std.fmt.BufPrintError!void {
+    if (shot or (record and @mod(frame_nb, INTERVAL_SCREENSHOT) == 0)) {
+        const fmt = "thumbnails/screenshot{d}.bmp";
+        var buffer: [fmt.len - 3 + 1 + std.math.log10(std.math.maxInt(u64))]u8 = undefined;
+        const len = std.fmt.count(fmt, .{screenshot_counter});
+        const name: []u8 = try std.fmt.bufPrint(buffer[0..], fmt, .{screenshot_counter});
+        const name_cast = @ptrCast([*c]u8, name);
+        name_cast[len] = 0;
+
+        image = c.SDL_CreateRGBSurfaceWithFormat(0, WINDOW_WIDTH, WINDOW_HEIGHT, 32, FORMAT);
+        _ = c.SDL_RenderReadPixels(renderer, null, FORMAT, image.*.pixels, image.*.pitch);
+        _ = c.SDL_SaveBMP(image, name_cast);
+        screenshot_counter += 1;
+        c.SDL_FreeSurface(image);
+        shot = false;
+    }
+}
+
 pub fn main() !void {
     init_rope();
 
@@ -110,6 +135,8 @@ pub fn main() !void {
                     switch (event.key.keysym.sym) {
                         'q' => return,
                         ' ' => pause = !pause,
+                        'r' => record = !record,
+                        's' => shot = true,
                         else => {},
                     }
                 },
@@ -125,6 +152,10 @@ pub fn main() !void {
         render(renderer);
 
         c.SDL_RenderPresent(renderer);
+
+        try screenshot(renderer);
+
+        frame_nb += 1;
 
         c.SDL_Delay(1000 / FPS);
     }
