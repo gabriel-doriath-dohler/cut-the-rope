@@ -47,13 +47,11 @@ fn set_color(renderer: *c.SDL_Renderer, color: u32) void {
     _ = c.SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
-// TODO always inline
-fn translate_point(dx: f32, dy: f32, pt: Point) Point {
+inline fn translate_point(dx: f32, dy: f32, pt: Point) Point {
     return Point{ .x = pt.x + dx, .y = pt.y + dy };
 }
 
-// TODO always inline
-fn translate_segment(dx: f32, dy: f32, seg: Segment) Segment {
+inline fn translate_segment(dx: f32, dy: f32, seg: Segment) Segment {
     return Segment{ .pt1 = translate_point(dx, dy, seg.pt1), .pt2 = translate_point(dx, dy, seg.pt2) };
 }
 
@@ -69,8 +67,7 @@ fn update(dt: f32) void {
     }
 }
 
-// TODO always inline
-fn draw_segment(renderer: *c.SDL_Renderer, seg: Segment) void {
+inline fn draw_segment(renderer: *c.SDL_Renderer, seg: Segment) void {
     _ = c.SDL_RenderDrawLine(renderer, @floatToInt(i32, seg.pt1.x), @floatToInt(i32, seg.pt1.y), @floatToInt(i31, seg.pt2.x), @floatToInt(i32, seg.pt2.y));
 }
 
