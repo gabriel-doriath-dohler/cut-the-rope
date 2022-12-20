@@ -9,7 +9,7 @@
       let pkgs = import nixpkgs { inherit system; };
       in {
         devShell = pkgs.mkShell {
-          buildInputs = with pkgs; [ nixfmt zig zls SDL2 ripgrep shellcheck ];
+          buildInputs = with pkgs; [ nixfmt zig zls SDL2 ripgrep shellcheck ffmpeg ];
         };
       });
 }
