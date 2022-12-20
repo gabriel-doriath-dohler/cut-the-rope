@@ -13,7 +13,6 @@ const NB_ROPE_SEG: i32 = 50;
 const ROPE_SPEED_X: f32 = 100;
 const ROPE_SPEED_Y: f32 = -50;
 
-var quit = false;
 var pause = false;
 
 const Point = struct {
@@ -103,16 +102,16 @@ pub fn main() !void {
     };
     defer c.SDL_DestroyRenderer(renderer);
 
-    while (!quit) {
+    while (true) {
         var event: c.SDL_Event = undefined;
         while (c.SDL_PollEvent(&event) != 0) {
             switch (event.@"type") {
                 c.SDL_QUIT => {
-                    quit = true;
+                    return;
                 },
                 c.SDL_KEYDOWN => {
                     switch (event.key.keysym.sym) {
-                        'q' => quit = true,
+                        'q' => return,
                         ' ' => pause = !pause,
                         else => {},
                     }
